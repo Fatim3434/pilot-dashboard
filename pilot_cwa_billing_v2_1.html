@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PILOT — CWA Billing Process Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@400;500;600&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #000835;
+    --bright-blue: #3B8AFF;
+    --blue: #005EB8;
+    --light-blue: #00A9E0;
+    --orange: #E95326;
+    --amber: #F7A827;
+    --green: #00A34E;
+    --purple: #6F2B8D;
+    --off-white: #F7F7FA;
+
+    --bg: #F7F7FA;
+    --surface: #FFFFFF;
+    --ink: #000835;
+    --ink-muted: #5A607A;
+    --ink-dim: #8990A8;
+    --line: #E3E6EF;
+    --line-strong: #C7CCDB;
+
+    --p1: #6F2B8D;
+    --p2: #005EB8;
+    --p3: #E95326;
+    --p4: #F7A827;
+    --p5: #00A34E;
+
+    --r-sm: 6px;
+    --r-md: 10px;
+    --r-lg: 16px;
+
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Source Sans 3', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--bg);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse 1200px 600px at 10% -10%, rgba(59,138,255,0.08), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 110% 10%, rgba(111,43,141,0.05), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+
+  .topbar {
+    background: var(--navy);
+    color: #fff;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--bright-blue);
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-mark {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    font-style: italic;
+  }
+  .brand-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.25); }
+  .brand-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.75);
+    font-weight: 500;
+  }
+  .topbar-right {
+    display: flex; align-items: center; gap: 20px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+  }
+  .topbar-actions {
+    display: flex;
+    gap: 6px;
+    padding-right: 14px;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    margin-right: 6px;
+  }
+  .tb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover {
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.35);
+    transform: translateY(-1px);
+  }
+  .tb-btn:active { transform: translateY(0); }
+  .tb-btn svg { opacity: 0.85; }
+  .tb-btn-primary {
+    background: var(--bright-blue);
+    border-color: var(--bright-blue);
+  }
+  .tb-btn-primary:hover {
+    background: #2970DC;
+    border-color: #2970DC;
+  }
+  .topbar-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+  .go-live-chip {
+    background: var(--orange);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero {
+    padding: 36px 40px 24px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,169,224,0.08), transparent 70%);
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--navy);
+    max-width: 900px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--blue);
+    font-weight: 500;
+  }
+  .hero-meta {
+    display: flex; gap: 32px; margin-top: 24px; flex-wrap: wrap;
+    position: relative;
+  }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .hero-meta-label {
+    font-size: 10px; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--ink-dim); font-weight: 500;
+  }
+  .hero-meta-value {
+    font-family: var(--font-display);
+    font-size: 18px; font-weight: 500;
+    color: var(--navy);
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .kpi {
+    padding: 20px 24px;
+    border-right: 1px solid var(--line);
+    position: relative;
+  }
+  .kpi:last-child { border-right: none; }
+  .kpi-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-dim);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .kpi-unit {
+    font-size: 13px; color: var(--ink-muted); margin-left: 4px;
+    font-family: var(--font-body);
+  }
+  .kpi-delta {
+    font-size: 11px;
+    margin-top: 6px;
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+  }
+  .kpi-delta.good { color: var(--green); }
+  .kpi-delta.warn { color: var(--amber); }
+  .kpi-delta.bad { color: var(--orange); }
+
+  .tabs {
+    display: flex;
+    padding: 0 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+  .tab:hover { color: var(--navy); }
+  .tab.active {
+    color: var(--navy);
+    border-bottom-color: var(--bright-blue);
+    font-weight: 600;
+  }
+  .tab-badge {
+    display: inline-block;
+    background: var(--line);
+    color: var(--ink-muted);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    margin-left: 6px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+  }
+  .tab.active .tab-badge {
+    background: var(--bright-blue);
+    color: #fff;
+  }
+
+  .main { padding: 32px 40px 60px; }
+
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 18px 18px 16px;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-card::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--phase-color, var(--bright-blue));
+  }
+  .phase-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,8,53,0.08);
+    border-color: var(--phase-color, var(--bright-blue));
+  }
+  .phase-card.active {
+    border-color: var(--phase-color);
+    box-shadow: 0 6px 22px rgba(0,8,53,0.1);
+  }
+  .phase-num {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 42px;
+    font-weight: 300;
+    color: var(--phase-color);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .phase-name {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 6px;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .phase-period {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .phase-progress-track {
+    height: 4px;
+    background: var(--line);
+    border-radius: 999px;
+    margin-top: 14px;
+    overflow: hidden;
+  }
+  .phase-progress-fill {
+    height: 100%;
+    background: var(--phase-color);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+  .phase-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .phase-meta strong {
+    font-family: var(--font-mono);
+    color: var(--navy);
+    font-weight: 600;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .panel-subtitle {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+  .panel-actions { display: flex; gap: 8px; }
+  .btn {
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--navy);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: all 0.12s;
+    font-family: var(--font-body);
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { border-color: var(--blue); color: var(--blue); }
+  .btn.primary {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+  .btn.primary:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn.ghost { border-color: transparent; padding: 6px 10px; }
+  .btn.ghost:hover { background: var(--bg); }
+  .btn.danger { color: var(--orange); }
+  .btn.danger:hover { border-color: var(--orange); }
+
+  /* Monthly Gantt */
+  .gantt-wrap {
+    overflow-x: auto;
+    padding: 16px 0 20px;
+  }
+  .gantt {
+    min-width: 1100px;
+    padding: 0 24px;
+  }
+  .gantt-header {
+    display: grid;
+    grid-template-columns: 280px repeat(10, 1fr);
+    gap: 2px;
+    margin-bottom: 6px;
+  }
+  .gantt-header-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+  .gantt-month {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    padding: 6px 0 4px;
+    border-bottom: 2px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .gantt-month.current {
+    color: var(--orange);
+    font-weight: 600;
+    border-bottom-color: var(--orange);
+  }
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 280px repeat(10, 1fr);
+    gap: 2px;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px dashed var(--line);
+  }
+  .gantt-row:first-of-type { border-top: 1px solid var(--line-strong); }
+  .gantt-label {
+    padding-right: 14px;
+    font-size: 12px;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+  .gantt-label-phase {
+    width: 3px;
+    height: 18px;
+    background: var(--phase-color);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .gantt-cell {
+    height: 26px;
+    border-right: 1px dotted rgba(199,204,219,0.4);
+    position: relative;
+  }
+  .gantt-cell:last-child { border-right: none; }
+  .gantt-bar {
+    position: absolute;
+    top: 4px; bottom: 4px;
+    background: linear-gradient(180deg, var(--phase-color) 0%, var(--phase-color-dark) 100%);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 10px;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-shadow: 0 1px 3px rgba(0,8,53,0.15);
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    padding: 20px 24px 24px;
+  }
+  .col {
+    background: var(--bg);
+    border-radius: var(--r-md);
+    padding: 14px;
+    min-height: 300px;
+    border: 1px solid var(--line);
+  }
+  .col-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .col-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+  .col-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
+  .task-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--phase-color, var(--line));
+    border-radius: var(--r-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .task-card:hover {
+    border-color: var(--blue);
+    border-left-color: var(--phase-color, var(--blue));
+    transform: translateX(2px);
+    box-shadow: 0 4px 12px rgba(0,8,53,0.06);
+  }
+  .task-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .task-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .task-owner {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .avatar {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--bright-blue);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .task-due {
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+  .task-due.overdue { color: var(--orange); font-weight: 600; }
+  .task-due.soon { color: var(--amber); }
+
+  .chip {
+    display: inline-block;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .chip.p-high { background: rgba(233,83,38,0.12); color: var(--orange); }
+  .chip.p-med { background: rgba(247,168,39,0.15); color: #B67800; }
+  .chip.p-low { background: rgba(0,163,78,0.12); color: var(--green); }
+
+  .stakeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    padding: 20px 24px 24px;
+  }
+  .stake-card {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--bg);
+  }
+  .stake-card.lead {
+    background: linear-gradient(135deg, rgba(111,43,141,0.06) 0%, rgba(59,138,255,0.04) 100%);
+    border: 1px solid var(--purple);
+  }
+  .stake-name {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--navy);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .stake-role {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .lead-tag {
+    display: inline-block;
+    background: var(--purple);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .raci-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .raci-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .raci-R { background: var(--navy); color: #fff; }
+  .raci-A { background: var(--orange); color: #fff; }
+  .raci-C { background: var(--light-blue); color: #fff; }
+  .raci-I { background: var(--line-strong); color: var(--navy); }
+
+  .milestones {
+    padding: 20px 24px 24px;
+  }
+  .milestone {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 18px;
+    padding: 14px 0;
+    border-top: 1px dashed var(--line);
+    align-items: center;
+  }
+  .milestone:first-child { border-top: none; }
+  .ms-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .ms-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--navy);
+    font-weight: 500;
+  }
+  .ms-desc {
+    font-size: 12px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+  .ms-status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .ms-status.done { background: rgba(0,163,78,0.12); color: var(--green); }
+  .ms-status.progress { background: rgba(59,138,255,0.12); color: var(--blue); }
+  .ms-status.pending { background: var(--line); color: var(--ink-muted); }
+  .ms-status.atrisk { background: rgba(233,83,38,0.12); color: var(--orange); }
+
+  .risk-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .risk-table th {
+    text-align: left;
+    padding: 12px 24px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-dim);
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .risk-table td {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--navy);
+    vertical-align: top;
+  }
+  .risk-table tr:last-child td { border-bottom: none; }
+  .risk-sev {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .sev-h { background: var(--orange); }
+  .sev-m { background: var(--amber); }
+  .sev-l { background: var(--green); }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,8,53,0.45);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: var(--r-lg);
+    width: 100%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,8,53,0.3);
+  }
+  .modal-lg { max-width: 820px; }
+
+  /* Status Report content */
+  .report {
+    font-family: var(--font-body);
+    color: var(--ink);
+  }
+  .report-header {
+    border-bottom: 3px solid var(--navy);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+  .report-doc-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .report-doc-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .report-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .report-kpi {
+    background: var(--bg);
+    border-left: 3px solid var(--blue);
+    padding: 10px 12px;
+    border-radius: 4px;
+  }
+  .report-kpi-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+  .report-kpi-value {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--navy);
+    margin-top: 2px;
+  }
+  .report h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--navy);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .report p { font-size: 13px; margin-bottom: 8px; line-height: 1.55; color: var(--ink); }
+  .report-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 6px 0 10px; }
+  .report-table th, .report-table td {
+    padding: 7px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+  }
+  .report-table th {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    background: var(--bg);
+    font-weight: 600;
+  }
+  .report-table td strong { color: var(--navy); font-weight: 600; }
+  .report-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .report-tag-good { background: rgba(0,163,78,0.12); color: var(--green); }
+  .report-tag-warn { background: rgba(247,168,39,0.18); color: #A77000; }
+  .report-tag-bad { background: rgba(233,83,38,0.12); color: var(--orange); }
+  .report-tag-neutral { background: var(--line); color: var(--ink-muted); }
+
+  /* Backup list */
+  .backup-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    margin-bottom: 8px;
+  }
+  .backup-entry-info {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--navy);
+  }
+  .backup-entry-meta {
+    font-size: 10px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .backup-entry-actions { display: flex; gap: 6px; }
+  .backup-entry-actions .btn { padding: 4px 10px; font-size: 11px; }
+
+  /* Print styles */
+  @media print {
+    body * { visibility: hidden; }
+    #report-modal, #report-modal * { visibility: visible; }
+    #report-modal {
+      position: absolute !important;
+      inset: 0 !important;
+      background: #fff !important;
+      backdrop-filter: none !important;
+      padding: 0 !important;
+    }
+    .modal-backdrop { background: #fff !important; backdrop-filter: none !important; }
+    .modal { box-shadow: none !important; max-width: none !important; max-height: none !important; }
+    .modal-head { border-bottom: none; }
+    .modal-close, .modal-foot { display: none !important; }
+    .report-header { page-break-after: avoid; }
+    .report h3 { page-break-after: avoid; }
+    .report-table { page-break-inside: avoid; }
+  }
+  .modal-head {
+    padding: 22px 26px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .modal-sub {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--ink-muted);
+    line-height: 1;
+    padding: 0 4px;
+  }
+  .modal-close:hover { color: var(--orange); }
+  .modal-body { padding: 20px 26px; }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    font-family: var(--font-body);
+    color: var(--navy);
+    background: var(--surface);
+    transition: border-color 0.12s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .modal-foot {
+    padding: 16px 26px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    background: var(--bg);
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+  }
+
+  .comments-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .comment {
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 12px;
+  }
+  .comment:last-child { border-bottom: none; }
+  .comment-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .comment-author { font-weight: 600; color: var(--navy); font-size: 11px; }
+  .comment-time { font-family: var(--font-mono); font-size: 10px; color: var(--ink-dim); }
+  .comment-text { color: var(--ink-muted); line-height: 1.5; }
+
+  .footer {
+    padding: 24px 40px;
+    text-align: center;
+    border-top: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-size: 11px;
+    background: var(--surface);
+  }
+  .footer-tag {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .empty {
+    padding: 30px 16px;
+    text-align: center;
+    color: var(--ink-dim);
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: var(--r-sm);
+    font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,8,53,0.2);
+    transform: translateY(120%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+  }
+  .toast.show { transform: translateY(0); }
+
+  @media (max-width: 1024px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .kpi { border-bottom: 1px solid var(--line); }
+    .phases-grid { grid-template-columns: repeat(2, 1fr); }
+    .board { grid-template-columns: 1fr; }
+    .hero-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="brand-mark">PILOT</span>
+    <span class="brand-sep"></span>
+    <span class="brand-tag">CWA Billing Process · v2.0</span>
+  </div>
+  <div class="topbar-right">
+    <div class="topbar-actions">
+      <button class="tb-btn" id="btn-status-report" title="Generate status report">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Status Report
+      </button>
+      <button class="tb-btn" id="btn-import" title="Import project data from JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Import
+      </button>
+      <button class="tb-btn" id="btn-export-top" title="Export project data as JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+      <button class="tb-btn tb-btn-primary" id="btn-backup" title="Save a timestamped backup">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Save Backup
+      </button>
+    </div>
+    <span class="topbar-date" id="today-date"></span>
+    <span class="go-live-chip" id="countdown">GO-LIVE · Jul</span>
+  </div>
+</div>
+<input type="file" id="import-file-input" accept="application/json,.json" style="display:none">
+
+<div class="hero">
+  <div class="hero-eyebrow">CWA · Central & West Africa · 17 Markets</div>
+  <h1 class="hero-title">
+    From <em>free</em> to <em>fully automated paid</em> — a 9-month<br>
+    transition to a product-agnostic billing model.
+  </h1>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Duration</div>
+      <div class="hero-meta-value">Apr 2026 — Jan 2027</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Phases</div>
+      <div class="hero-meta-value">5 · Prep → Full Paid Model</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Go-Live</div>
+      <div class="hero-meta-value">July 2026</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Full transition</div>
+      <div class="hero-meta-value">January 2027</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Project Lead</div>
+      <div class="hero-meta-value">Fatim Sow · CWA-wide</div>
+    </div>
+    <div class="hero-meta-item">
+      <div class="hero-meta-label">Sponsor</div>
+      <div class="hero-meta-value">Yann · VP CWA</div>
+    </div>
+  </div>
+</div>
+
+<div class="kpi-strip">
+  <div class="kpi">
+    <div class="kpi-label">Overall progress</div>
+    <div class="kpi-value"><span id="kpi-progress">—</span><span class="kpi-unit">%</span></div>
+    <div class="kpi-delta" id="kpi-progress-delta">Tracking project completion</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Current phase</div>
+    <div class="kpi-value" style="font-size:20px" id="kpi-phase">—</div>
+    <div class="kpi-delta" id="kpi-phase-delta">—</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Days to Go-Live</div>
+    <div class="kpi-value" id="kpi-days">—</div>
+    <div class="kpi-delta" id="kpi-days-delta">Jul 2026 · cutover</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Tasks · Open</div>
+    <div class="kpi-value" id="kpi-open">—</div>
+    <div class="kpi-delta" id="kpi-open-delta">In progress + not started</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Overdue</div>
+    <div class="kpi-value" id="kpi-overdue">—</div>
+    <div class="kpi-delta" id="kpi-overdue-delta">Needs escalation</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-view="overview">Overview</div>
+  <div class="tab" data-view="gantt">Gantt</div>
+  <div class="tab" data-view="tasks">Task Board <span class="tab-badge" id="tab-tasks-count">0</span></div>
+  <div class="tab" data-view="milestones">Milestones</div>
+  <div class="tab" data-view="stakeholders">Stakeholders</div>
+  <div class="tab" data-view="risks">Risks <span class="tab-badge" id="tab-risks-count">0</span></div>
+</div>
+
+<div class="main">
+
+  <div class="view active" id="view-overview">
+    <div class="phases-grid" id="phases-grid"></div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Phase breakdown</div>
+          <div class="panel-subtitle">Click a phase above to filter tasks · each phase has its own task board</div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn" id="btn-export">Export JSON</button>
+          <button class="btn primary" id="btn-add-task-ov">+ New task</button>
+        </div>
+      </div>
+      <div class="board" id="board-preview"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Upcoming milestones</div>
+          <div class="panel-subtitle">Next 4 checkpoints on the critical path</div>
+        </div>
+      </div>
+      <div class="milestones" id="milestones-preview"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-gantt">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Project timeline · 10 months</div>
+          <div class="panel-subtitle">Apr 2026 — Jan 2027 · Go-Live July 2026 · Full Paid Model Jan 2027</div>
+        </div>
+      </div>
+      <div class="gantt-wrap">
+        <div class="gantt" id="gantt-chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="view-tasks">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Task board · <span id="board-filter-label">All phases</span></div>
+          <div class="panel-subtitle">Drag between columns or click a card to edit</div>
+        </div>
+        <div class="panel-actions">
+          <select id="phase-filter" class="btn" style="padding: 7px 10px;">
+            <option value="all">All phases</option>
+          </select>
+          <button class="btn primary" id="btn-add-task">+ New task</button>
+        </div>
+      </div>
+      <div class="board" id="task-board"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-milestones">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Milestones & checkpoints</div>
+          <div class="panel-subtitle">Board reviews, go/no-go gates, and phase exits</div>
+        </div>
+      </div>
+      <div class="milestones" id="milestones-full"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-stakeholders">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Stakeholders & RACI</div>
+          <div class="panel-subtitle">R = Responsible · A = Accountable · C = Consulted · I = Informed</div>
+        </div>
+      </div>
+      <div class="stakeholder-grid" id="stake-grid"></div>
+    </div>
+  </div>
+
+  <div class="view" id="view-risks">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">Risk register</div>
+          <div class="panel-subtitle">Owned, scored, and monitored weekly</div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn primary" id="btn-add-risk">+ New risk</button>
+        </div>
+      </div>
+      <table class="risk-table" id="risk-table">
+        <thead>
+          <tr>
+            <th style="width:90px">Severity</th>
+            <th>Risk</th>
+            <th style="width:160px">Owner</th>
+            <th style="width:220px">Mitigation</th>
+            <th style="width:100px">Status</th>
+          </tr>
+        </thead>
+        <tbody id="risk-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-tag">Amadeus. It's how travel works.</div>
+  <div>PILOT Dashboard · CWA Billing Process Project · © 2026 Amadeus IT Group</div>
+</div>
+
+<!-- Modals -->
+<div class="modal-backdrop" id="task-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="task-modal-title">New task</div>
+        <div class="modal-sub" id="task-modal-sub">—</div>
+      </div>
+      <button class="modal-close" data-close="task-modal">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Import customer base from Salesforce">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Phase</label>
+          <select id="f-phase"></select>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="f-status">
+            <option value="backlog">Backlog</option>
+            <option value="todo">To do</option>
+            <option value="doing">In progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Owner</label>
+          <input type="text" id="f-owner" placeholder="e.g. Fatim Sow">
+        </div>
+        <div class="field">
+          <label>Priority</label>
+          <select id="f-priority">
+            <option value="high">High</option>
+            <option value="med" selected>Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Start</label>
+          <input type="date" id="f-start">
+        </div>
+        <div class="field">
+          <label>Due</label>
+          <input type="date" id="f-due">
+        </div>
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="f-notes" rows="3" placeholder="Context, links, dependencies…"></textarea>
+      </div>
+      <div class="comments-section" id="comments-section" style="display:none;">
+        <label style="display:block; font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:var(--ink-muted); font-weight:500; margin-bottom:10px;">Activity log</label>
+        <div id="comments-list"></div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <input type="text" id="new-comment" placeholder="Add a comment…" style="flex:1; padding:8px 10px; font-size:12px; border:1px solid var(--line-strong); border-radius:var(--r-sm);">
+          <button class="btn primary" id="btn-add-comment" style="padding:6px 12px;">Post</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn danger" id="btn-delete-task" style="display:none;">Delete</button>
+      <button class="btn" data-close="task-modal">Cancel</button>
+      <button class="btn primary" id="btn-save-task">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="risk-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="risk-modal-title">New risk</div>
+        <div class="modal-sub">Risk register entry</div>
+      </div>
+      <button class="modal-close" data-close="risk-modal">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Risk description</label>
+        <input type="text" id="r-desc" placeholder="e.g. Customer resistance to paid model">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Severity</label>
+          <select id="r-sev">
+            <option value="h">High</option>
+            <option value="m" selected>Medium</option>
+            <option value="l">Low</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="r-status">
+            <option value="open">Open</option>
+            <option value="monitoring">Monitoring</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Owner</label>
+        <input type="text" id="r-owner" placeholder="e.g. Fatim Sow">
+      </div>
+      <div class="field">
+        <label>Mitigation</label>
+        <textarea id="r-mit" rows="2" placeholder="Action plan…"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn danger" id="btn-delete-risk" style="display:none;">Delete</button>
+      <button class="btn" data-close="risk-modal">Cancel</button>
+      <button class="btn primary" id="btn-save-risk">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Status Report Modal -->
+<div class="modal-backdrop" id="report-modal">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Project Status Report</div>
+        <div class="modal-sub" id="report-modal-sub">Generated — click Print or Export PDF</div>
+      </div>
+      <button class="modal-close" data-close="report-modal">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="report-content"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="btn-copy-report">Copy to clipboard</button>
+      <button class="btn" data-close="report-modal">Close</button>
+      <button class="btn primary" id="btn-print-report">Print / Save as PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- Backups Modal -->
+<div class="modal-backdrop" id="backup-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Backup saved</div>
+        <div class="modal-sub">Project backups are kept locally (up to 10) — restore anytime</div>
+      </div>
+      <button class="modal-close" data-close="backup-modal">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="backup-list"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close="backup-modal">Close</button>
+      <button class="btn primary" id="btn-new-backup">+ New Backup</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   PILOT · CWA Billing Process Project — v2.0
+   Project Lead: Fatim Sow · CWA-wide
+   Timeline: Apr 2026 → Jan 2027
+============================================================ */
+
+const PROJECT_START = new Date('2026-04-01');
+const PROJECT_END   = new Date('2027-01-31');
+const GO_LIVE       = new Date('2026-07-01');
+const FULL_PAID     = new Date('2027-01-01');
+const TODAY         = new Date('2026-04-17');
+
+// 10-month grid: Apr'26, May'26, Jun'26, Jul'26, Aug'26, Sep'26, Oct'26, Nov'26, Dec'26, Jan'27
+const MONTHS = [
+  { label:'Apr 26', y:2026, m:3 },
+  { label:'May 26', y:2026, m:4 },
+  { label:'Jun 26', y:2026, m:5 },
+  { label:'Jul 26', y:2026, m:6 },
+  { label:'Aug 26', y:2026, m:7 },
+  { label:'Sep 26', y:2026, m:8 },
+  { label:'Oct 26', y:2026, m:9 },
+  { label:'Nov 26', y:2026, m:10 },
+  { label:'Dec 26', y:2026, m:11 },
+  { label:'Jan 27', y:2027, m:0 },
+];
+
+const PHASES = [
+  { id:'p1', num:1, name:'Preparation',         period:'Apr–May 2026',  monthStart:0, monthEnd:1, color:'#6F2B8D', dark:'#4E1C65' },
+  { id:'p2', num:2, name:'Pilot',               period:'Jun 2026',      monthStart:2, monthEnd:2, color:'#005EB8', dark:'#00417E' },
+  { id:'p3', num:3, name:'Go-Live',             period:'Jul 2026',      monthStart:3, monthEnd:3, color:'#E95326', dark:'#A83515' },
+  { id:'p4', num:4, name:'Paid Model Campaign', period:'Oct–Dec 2026',  monthStart:6, monthEnd:8, color:'#F7A827', dark:'#B67800' },
+  { id:'p5', num:5, name:'Full Paid Model',     period:'Jan 2027',      monthStart:9, monthEnd:9, color:'#00A34E', dark:'#006E33' },
+];
+
+const SEED_TASKS = [
+  // Phase 1 — Preparation (Apr–May 2026)
+  { id:'t1',  phase:'p1', title:'Import full CWA customer base (17 markets, all billable accounts)', status:'doing',   owner:'Fatim',   priority:'high', start:'2026-04-07', due:'2026-04-30', notes:'Source: Salesforce + legacy AOS extracts. De-dup required.' },
+  { id:'t2',  phase:'p1', title:'Define billing process (product-agnostic, end-to-end)', status:'doing',   owner:'Fatim',   priority:'high', start:'2026-04-13', due:'2026-05-09', notes:'Covers Selling Platform, Offers, AQC, Hotel, NDC, AOS.' },
+  { id:'t3',  phase:'p1', title:'Define reporting framework (dashboards, KPIs, cadence)', status:'todo',    owner:'Fatim',   priority:'high', start:'2026-04-20', due:'2026-05-15', notes:'Aligned with RevOps and Yann\'s preferred format (number-first).' },
+  { id:'t4',  phase:'p1', title:'Communication to Account Manager team (kickoff + expectations)', status:'todo',    owner:'Fatim',   priority:'high', start:'2026-05-04', due:'2026-05-22', notes:'All 5 AMs: Arthur, Marianne, Laurenthia, Chrystaldi + Fatim herself.' },
+  { id:'t5',  phase:'p1', title:'Review with Finance (Renée) & Legal (Grégoire)', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-05-11', due:'2026-05-29', notes:'Sign-off on process + legal framework for paid model.' },
+  { id:'t6',  phase:'p1', title:'Phase 1 exit readout to Yann', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-05-25', due:'2026-05-29', notes:'Go/No-Go decision for Pilot.' },
+
+  // Phase 2 — Pilot (Jun 2026)
+  { id:'t7',  phase:'p2', title:'Select pilot scope (markets + products + accounts)', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-06-01', due:'2026-06-05', notes:'Suggestion: 2-3 markets, 1-2 product lines.' },
+  { id:'t8',  phase:'p2', title:'Run pilot billing cycle end-to-end', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-06-08', due:'2026-06-26', notes:'First real invoices issued through new process.' },
+  { id:'t9',  phase:'p2', title:'Collect pilot feedback (AMs + customers + Finance)', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-06-22', due:'2026-06-26', notes:'' },
+  { id:'t10', phase:'p2', title:'Phase 2 exit readout — Pilot results + Go-Live recommendation', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-06-29', due:'2026-06-30', notes:'Presented to Yann.' },
+
+  // Phase 3 — Go-Live (Jul 2026)
+  { id:'t11', phase:'p3', title:'Roll out process across all 17 CWA markets', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-07-01', due:'2026-07-10', notes:'Cutover. Full CWA scope.' },
+  { id:'t12', phase:'p3', title:'Issue first full-cycle invoices under new process', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-07-06', due:'2026-07-31', notes:'' },
+  { id:'t13', phase:'p3', title:'Daily monitoring + issue resolution (hypercare)', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-07-01', due:'2026-07-31', notes:'Hypercare model: daily stand-ups + rapid escalation.' },
+  { id:'t14', phase:'p3', title:'Go-Live retrospective + stabilization plan', status:'backlog', owner:'Fatim',   priority:'med',  start:'2026-07-27', due:'2026-07-31', notes:'Feeds into Aug–Sep stabilization window.' },
+
+  // Stabilization (implicit window Aug–Sep 2026) — tagged to p3 for tracking
+  { id:'t15', phase:'p3', title:'Aug–Sep stabilization & observation window', status:'backlog', owner:'Fatim',   priority:'med',  start:'2026-08-03', due:'2026-09-30', notes:'Fix defects, refine process, prepare for Phase 4 campaign.' },
+
+  // Phase 4 — Paid Model Campaign (Oct–Dec 2026)
+  { id:'t16', phase:'p4', title:'Design customer communication strategy (free → paid transition)', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-10-01', due:'2026-10-17', notes:'Bilingual EN/FR. Segmented by market and customer tier.' },
+  { id:'t17', phase:'p4', title:'Launch comms campaign to CWA markets', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-10-19', due:'2026-11-13', notes:'Webinars, 1:1 AM meetings, written notices.' },
+  { id:'t18', phase:'p4', title:'Handle objections + negotiate where needed', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-11-02', due:'2026-12-18', notes:'Escalation path to Yann for strategic accounts.' },
+  { id:'t19', phase:'p4', title:'Collect customer acknowledgements of paid model', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-11-16', due:'2026-12-23', notes:'Formal acknowledgement required for Phase 5 readiness.' },
+  { id:'t20', phase:'p4', title:'Phase 4 exit readout — paid model readiness', status:'backlog', owner:'Fatim',   priority:'high', start:'2026-12-21', due:'2026-12-23', notes:'Final Go/No-Go before Jan 2027 transition.' },
+
+  // Phase 5 — Full Paid Model (Jan 2027)
+  { id:'t21', phase:'p5', title:'Automate billing process end-to-end', status:'backlog', owner:'Fatim',   priority:'high', start:'2027-01-04', due:'2027-01-15', notes:'No manual intervention in billing cycle.' },
+  { id:'t22', phase:'p5', title:'Switch all CWA customers to paid model', status:'backlog', owner:'Fatim',   priority:'high', start:'2027-01-04', due:'2027-01-15', notes:'Cutover. Irreversible.' },
+  { id:'t23', phase:'p5', title:'Issue first fully-paid, fully-automated invoices', status:'backlog', owner:'Fatim',   priority:'high', start:'2027-01-18', due:'2027-01-31', notes:'' },
+  { id:'t24', phase:'p5', title:'Project closeout + handover to steady-state governance', status:'backlog', owner:'Fatim',   priority:'med',  start:'2027-01-25', due:'2027-01-31', notes:'Hand over to ongoing billing ops.' },
+];
+
+const SEED_MILESTONES = [
+  { id:'m1', date:'2026-05-29', title:'Phase 1 Exit — Preparation complete',   desc:'Customer base imported · process defined · reporting live · AMs briefed', status:'progress' },
+  { id:'m2', date:'2026-06-30', title:'Phase 2 Exit — Pilot validated',         desc:'Pilot results approved by Yann · cutover authorized',                   status:'pending' },
+  { id:'m3', date:'2026-07-01', title:'GO-LIVE',                                 desc:'New billing process live across 17 CWA markets',                        status:'pending' },
+  { id:'m4', date:'2026-07-31', title:'Hypercare complete',                      desc:'First full month of live invoicing stabilized',                         status:'pending' },
+  { id:'m5', date:'2026-10-01', title:'Paid Model Campaign kickoff',             desc:'Customer communication campaign begins',                                status:'pending' },
+  { id:'m6', date:'2026-12-23', title:'Phase 4 Exit — Paid model readiness',     desc:'Go/No-Go for full transition to paid model',                            status:'pending' },
+  { id:'m7', date:'2027-01-01', title:'FULL PAID MODEL TRANSITION',              desc:'All CWA customers on paid model with automated billing',                status:'pending' },
+  { id:'m8', date:'2027-01-31', title:'Project closeout',                        desc:'Handover to steady-state governance',                                   status:'pending' },
+];
+
+const SEED_STAKEHOLDERS = [
+  { name:'Fatim Sow',       role:'Project Lead · CWA-wide (no regional restriction)', raci:['R','A'], lead:true },
+  { name:'Yann Gilbert',    role:'VP CWA · Sponsor',                raci:['A','I'] },
+  { name:'Malick Sy',       role:'AD Sales CWA · Escalation & backing', raci:['A','I'] },
+  { name:'Renée',           role:'Finance Business Partner',        raci:['C','I'] },
+  { name:'Grégoire',        role:'Legal Counsel',                   raci:['C','I'] },
+  { name:'Arthur Djongwane',role:'AM · SEN, CMR, MLI, CAF, TCD, GMB', raci:['C','I'] },
+  { name:'Marianne Nseya',  role:'AM · DRC',                        raci:['C','I'] },
+  { name:'Laurenthia Billogo Ango', role:'AM · GAB, GNQ',           raci:['C','I'] },
+  { name:'Chrystaldi Yoka', role:'AM · COG',                        raci:['C','I'] },
+  { name:'RevOps',          role:'Reporting & target-setting',      raci:['C'] },
+  { name:'Collections team',role:'Dunning & recovery',              raci:['C','I'] },
+];
+
+const SEED_RISKS = [
+  { id:'r1', desc:'Customer resistance to free → paid transition',      sev:'h', owner:'Fatim', mit:'Early comms campaign (Oct–Dec) + segmented approach by customer tier', status:'open' },
+  { id:'r2', desc:'Incomplete or dirty customer base on import',        sev:'m', owner:'Fatim', mit:'Two-pass import + AM validation in weeks 2–3', status:'open' },
+  { id:'r3', desc:'Finance/Legal sign-off delays (Phase 1)',            sev:'m', owner:'Fatim', mit:'Engage Renée and Grégoire from week 1, not week 4', status:'monitoring' },
+  { id:'r4', desc:'Pilot surfaces structural process flaws (Jun)',      sev:'m', owner:'Fatim', mit:'Allow 2-week buffer before Go-Live; prepared to defer if needed', status:'open' },
+  { id:'r5', desc:'Automation not production-ready for Jan 2027',       sev:'h', owner:'Fatim', mit:'Technical discovery started in Phase 2, in parallel with Pilot', status:'open' },
+  { id:'r6', desc:'AM capacity constrained during hypercare (Jul)',     sev:'m', owner:'Fatim', mit:'Daily stand-ups + fast escalation to Fatim; Yann aware', status:'open' },
+  { id:'r7', desc:'Campaign messaging misaligned across markets',       sev:'l', owner:'Fatim', mit:'Bilingual (EN/FR) + market-specific review before launch', status:'open' },
+];
+
+let state = {
+  tasks: [],
+  risks: [],
+  milestones: SEED_MILESTONES,
+  comments: {},
+  activePhase: 'all',
+  currentTask: null,
+  currentRisk: null,
+  isLoaded: false,
+};
+
+async function loadState() {
+  try {
+    const t = await window.storage.get('pilot_cwa_v2_tasks').catch(() => null);
+    state.tasks = t ? JSON.parse(t.value) : JSON.parse(JSON.stringify(SEED_TASKS));
+  } catch { state.tasks = JSON.parse(JSON.stringify(SEED_TASKS)); }
+
+  try {
+    const r = await window.storage.get('pilot_cwa_v2_risks').catch(() => null);
+    state.risks = r ? JSON.parse(r.value) : JSON.parse(JSON.stringify(SEED_RISKS));
+  } catch { state.risks = JSON.parse(JSON.stringify(SEED_RISKS)); }
+
+  try {
+    const c = await window.storage.get('pilot_cwa_v2_comments').catch(() => null);
+    state.comments = c ? JSON.parse(c.value) : {};
+  } catch { state.comments = {}; }
+
+  try {
+    const m = await window.storage.get('pilot_cwa_v2_milestones').catch(() => null);
+    state.milestones = m ? JSON.parse(m.value) : JSON.parse(JSON.stringify(SEED_MILESTONES));
+  } catch { state.milestones = JSON.parse(JSON.stringify(SEED_MILESTONES)); }
+
+  state.isLoaded = true;
+}
+
+async function saveTasks() {
+  try { await window.storage.set('pilot_cwa_v2_tasks', JSON.stringify(state.tasks)); } catch(e){ console.error(e); }
+}
+async function saveRisks() {
+  try { await window.storage.set('pilot_cwa_v2_risks', JSON.stringify(state.risks)); } catch(e){ console.error(e); }
+}
+async function saveComments() {
+  try { await window.storage.set('pilot_cwa_v2_comments', JSON.stringify(state.comments)); } catch(e){ console.error(e); }
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const dt = typeof d === 'string' ? new Date(d) : d;
+  return dt.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'2-digit' });
+}
+function daysBetween(a, b) {
+  return Math.round(((new Date(b)) - (new Date(a))) / (1000 * 60 * 60 * 24));
+}
+function monthIndex(date) {
+  const d = typeof date === 'string' ? new Date(date) : date;
+  return MONTHS.findIndex(m => m.y === d.getFullYear() && m.m === d.getMonth());
+}
+function currentMonthIndex() {
+  return monthIndex(TODAY);
+}
+function currentPhase() {
+  const mi = currentMonthIndex();
+  return PHASES.find(p => mi >= p.monthStart && mi <= p.monthEnd);
+}
+function initials(name) {
+  if (!name) return '?';
+  return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('');
+}
+function phaseById(id) { return PHASES.find(p => p.id === id); }
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function renderHeader() {
+  document.getElementById('today-date').textContent =
+    TODAY.toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+  const daysLeft = daysBetween(TODAY, GO_LIVE);
+  document.getElementById('countdown').textContent = `GO-LIVE · ${daysLeft}d`;
+}
+
+function renderKpis() {
+  const total = state.tasks.length;
+  const done = state.tasks.filter(t => t.status === 'done').length;
+  const progress = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('kpi-progress').textContent = progress;
+  document.getElementById('kpi-progress-delta').textContent = `${done}/${total} tasks complete`;
+
+  const cp = currentPhase();
+  document.getElementById('kpi-phase').textContent = cp ? `${cp.num}. ${cp.name}` : 'Pre-start';
+  document.getElementById('kpi-phase-delta').textContent = cp ? cp.period : '—';
+
+  const daysLeft = daysBetween(TODAY, GO_LIVE);
+  document.getElementById('kpi-days').textContent = daysLeft;
+  const daysEl = document.getElementById('kpi-days-delta');
+  if (daysLeft < 30) { daysEl.textContent = '< 1 month to Go-Live'; daysEl.className = 'kpi-delta bad'; }
+  else if (daysLeft < 60) { daysEl.textContent = 'On approach'; daysEl.className = 'kpi-delta warn'; }
+  else { daysEl.textContent = 'Jul 2026 · cutover'; daysEl.className = 'kpi-delta good'; }
+
+  const open = state.tasks.filter(t => t.status !== 'done').length;
+  document.getElementById('kpi-open').textContent = open;
+
+  const overdue = state.tasks.filter(t => t.status !== 'done' && new Date(t.due) < TODAY).length;
+  document.getElementById('kpi-overdue').textContent = overdue;
+  const odEl = document.getElementById('kpi-overdue-delta');
+  if (overdue > 0) { odEl.textContent = `Escalation needed`; odEl.className = 'kpi-delta bad'; }
+  else { odEl.textContent = 'All on track'; odEl.className = 'kpi-delta good'; }
+
+  document.getElementById('tab-tasks-count').textContent = total;
+  document.getElementById('tab-risks-count').textContent = state.risks.filter(r => r.status !== 'closed').length;
+}
+
+function renderPhases() {
+  const grid = document.getElementById('phases-grid');
+  const cpId = currentPhase()?.id;
+  grid.innerHTML = PHASES.map(p => {
+    const phaseTasks = state.tasks.filter(t => t.phase === p.id);
+    const done = phaseTasks.filter(t => t.status === 'done').length;
+    const pct = phaseTasks.length ? Math.round(done / phaseTasks.length * 100) : 0;
+    const isNow = p.id === cpId;
+    return `
+      <div class="phase-card ${state.activePhase === p.id ? 'active' : ''}"
+           data-phase="${p.id}"
+           style="--phase-color:${p.color}">
+        <div class="phase-num">0${p.num}</div>
+        <div class="phase-name">${p.name}</div>
+        <div class="phase-period">${p.period}${isNow ? ' · NOW' : ''}</div>
+        <div class="phase-progress-track"><div class="phase-progress-fill" style="width:${pct}%"></div></div>
+        <div class="phase-meta">
+          <span>${done}/${phaseTasks.length} tasks</span>
+          <strong>${pct}%</strong>
+        </div>
+      </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.phase-card').forEach(el => {
+    el.addEventListener('click', () => {
+      state.activePhase = el.dataset.phase === state.activePhase ? 'all' : el.dataset.phase;
+      renderPhases();
+      renderBoardPreview();
+      switchView('tasks');
+      document.getElementById('phase-filter').value = state.activePhase;
+      renderTaskBoard();
+    });
+  });
+
+  const sel = document.getElementById('phase-filter');
+  if (sel.options.length <= 1) {
+    PHASES.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = `Phase ${p.num} · ${p.name}`;
+      sel.appendChild(o);
+    });
+  }
+  const modalSel = document.getElementById('f-phase');
+  if (modalSel.options.length === 0) {
+    PHASES.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = `Phase ${p.num} · ${p.name}`;
+      modalSel.appendChild(o);
+    });
+  }
+}
+
+function renderBoardPreview() { renderBoardInto('board-preview', state.activePhase); }
+function renderTaskBoard() {
+  renderBoardInto('task-board', state.activePhase);
+  const label = state.activePhase === 'all'
+    ? 'All phases'
+    : `Phase ${phaseById(state.activePhase).num} · ${phaseById(state.activePhase).name}`;
+  document.getElementById('board-filter-label').textContent = label;
+}
+
+function renderBoardInto(containerId, phaseFilter) {
+  const el = document.getElementById(containerId);
+  const cols = [
+    { id:'backlog', label:'Backlog' },
+    { id:'todo',    label:'To do' },
+    { id:'doing',   label:'In progress' },
+    { id:'done',    label:'Done' },
+  ];
+  const filtered = phaseFilter === 'all' ? state.tasks : state.tasks.filter(t => t.phase === phaseFilter);
+
+  el.innerHTML = cols.map(c => {
+    const tasks = filtered.filter(t => t.status === c.id);
+    return `
+      <div class="col" data-col="${c.id}">
+        <div class="col-head">
+          <span class="col-title">${c.label}</span>
+          <span class="col-count">${tasks.length}</span>
+        </div>
+        <div class="col-body">
+          ${tasks.length === 0
+            ? '<div class="empty">No tasks</div>'
+            : tasks.map(t => taskCardHTML(t)).join('')}
+        </div>
+      </div>`;
+  }).join('');
+
+  el.querySelectorAll('.task-card').forEach(c => {
+    c.addEventListener('click', () => openTaskModal(c.dataset.id));
+  });
+
+  el.querySelectorAll('.task-card').forEach(c => {
+    c.draggable = true;
+    c.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', c.dataset.id);
+      c.style.opacity = '0.5';
+    });
+    c.addEventListener('dragend', () => c.style.opacity = '1');
+  });
+  el.querySelectorAll('.col').forEach(col => {
+    col.addEventListener('dragover', e => { e.preventDefault(); col.style.background = '#EEF3FB'; });
+    col.addEventListener('dragleave', () => col.style.background = '');
+    col.addEventListener('drop', async e => {
+      e.preventDefault();
+      col.style.background = '';
+      const id = e.dataTransfer.getData('text/plain');
+      const task = state.tasks.find(t => t.id === id);
+      if (task && task.status !== col.dataset.col) {
+        task.status = col.dataset.col;
+        await saveTasks();
+        renderAll();
+        toast(`Moved to ${col.dataset.col}`);
+      }
+    });
+  });
+}
+
+function taskCardHTML(t) {
+  const p = phaseById(t.phase);
+  const dueDate = new Date(t.due);
+  const daysToDue = daysBetween(TODAY, dueDate);
+  let dueCls = '';
+  if (t.status !== 'done' && daysToDue < 0) dueCls = 'overdue';
+  else if (t.status !== 'done' && daysToDue <= 3) dueCls = 'soon';
+
+  const priorityChip = `<span class="chip p-${t.priority}">${t.priority}</span>`;
+  const commentCount = (state.comments[t.id] || []).length;
+  const commentBadge = commentCount > 0 ? ` 💬 ${commentCount}` : '';
+
+  return `
+    <div class="task-card" data-id="${t.id}" style="--phase-color:${p.color}">
+      <div class="task-title">${priorityChip}${escapeHtml(t.title)}</div>
+      <div class="task-meta">
+        <span class="task-owner">
+          <span class="avatar" style="background:${p.color}">${initials(t.owner)}</span>
+          ${escapeHtml(t.owner || '—')}
+        </span>
+        <span class="task-due ${dueCls}">${fmtDate(t.due)}${commentBadge}</span>
+      </div>
+    </div>`;
+}
+
+function renderGantt() {
+  const el = document.getElementById('gantt-chart');
+  const cm = currentMonthIndex();
+
+  let html = '<div class="gantt-header">';
+  html += '<div class="gantt-header-label">Task · Phase</div>';
+  MONTHS.forEach((m, i) => {
+    html += `<div class="gantt-month ${i === cm ? 'current' : ''}">${m.label}</div>`;
+  });
+  html += '</div>';
+
+  // Phase summary rows
+  PHASES.forEach(p => {
+    html += `<div class="gantt-row">
+      <div class="gantt-label">
+        <span class="gantt-label-phase" style="--phase-color:${p.color}"></span>
+        <strong>Phase ${p.num} · ${p.name}</strong>
+      </div>`;
+    for (let i = 0; i < MONTHS.length; i++) {
+      html += `<div class="gantt-cell">`;
+      if (i === p.monthStart) {
+        const span = p.monthEnd - p.monthStart + 1;
+        const widthCalc = `calc(${span * 100}% + ${(span - 1) * 2}px - 4px)`;
+        html += `<div class="gantt-bar" style="--phase-color:${p.color}; --phase-color-dark:${p.dark}; left:2px; width:${widthCalc};">
+          ${p.name}
+        </div>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+
+  // Tasks
+  state.tasks.forEach(t => {
+    const p = phaseById(t.phase);
+    const startMi = Math.max(0, monthIndex(new Date(t.start)));
+    const endMi = Math.min(MONTHS.length - 1, monthIndex(new Date(t.due)));
+    const span = Math.max(1, endMi - startMi + 1);
+
+    html += `<div class="gantt-row" data-task="${t.id}" style="cursor:pointer">
+      <div class="gantt-label">
+        <span class="gantt-label-phase" style="--phase-color:${p.color}"></span>
+        ${escapeHtml(t.title.length > 44 ? t.title.slice(0,42)+'…' : t.title)}
+      </div>`;
+    for (let i = 0; i < MONTHS.length; i++) {
+      html += `<div class="gantt-cell">`;
+      if (i === startMi) {
+        const opacity = t.status === 'done' ? '0.5' : '1';
+        const widthCalc = `calc(${span * 100}% + ${(span - 1) * 2}px - 4px)`;
+        html += `<div class="gantt-bar" style="--phase-color:${p.color}; --phase-color-dark:${p.dark}; left:2px; width:${widthCalc}; opacity:${opacity};">
+          ${escapeHtml(t.owner || '')}
+        </div>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div>`;
+  });
+
+  el.innerHTML = html;
+
+  el.querySelectorAll('.gantt-row[data-task]').forEach(row => {
+    row.addEventListener('click', () => openTaskModal(row.dataset.task));
+  });
+}
+
+function renderMilestones(containerId, limit) {
+  const el = document.getElementById(containerId);
+  let list = [...state.milestones].sort((a,b) => new Date(a.date) - new Date(b.date));
+  if (limit) list = list.filter(m => m.status !== 'done').slice(0, limit);
+
+  el.innerHTML = list.map(m => {
+    const daysTo = daysBetween(TODAY, new Date(m.date));
+    const statusMap = {
+      done: 'Done',
+      progress: 'In progress',
+      pending: daysTo < 30 && daysTo > 0 ? 'Upcoming' : 'Pending',
+      atrisk: 'At risk',
+    };
+    return `
+      <div class="milestone">
+        <div class="ms-date">${fmtDate(m.date)}${daysTo >= 0 ? ` · ${daysTo}d` : ''}</div>
+        <div>
+          <div class="ms-title">${escapeHtml(m.title)}</div>
+          <div class="ms-desc">${escapeHtml(m.desc)}</div>
+        </div>
+        <div class="ms-status ${m.status}">${statusMap[m.status]}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderStakeholders() {
+  const el = document.getElementById('stake-grid');
+  el.innerHTML = SEED_STAKEHOLDERS.map(s => `
+    <div class="stake-card ${s.lead ? 'lead' : ''}">
+      ${s.lead ? '<span class="lead-tag">PROJECT LEAD</span>' : ''}
+      <div class="stake-name">${escapeHtml(s.name)}</div>
+      <div class="stake-role">${escapeHtml(s.role)}</div>
+      <div class="raci-tags">
+        ${s.raci.map(r => `<span class="raci-tag raci-${r}">${r}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRisks() {
+  const el = document.getElementById('risk-tbody');
+  const sorted = [...state.risks].sort((a,b) => {
+    const order = {h:0, m:1, l:2};
+    return order[a.sev] - order[b.sev];
+  });
+  el.innerHTML = sorted.map(r => `
+    <tr data-id="${r.id}" style="cursor:pointer">
+      <td><span class="risk-sev sev-${r.sev}"></span>${({h:'High',m:'Med',l:'Low'})[r.sev]}</td>
+      <td>${escapeHtml(r.desc)}</td>
+      <td>${escapeHtml(r.owner)}</td>
+      <td style="color:var(--ink-muted); font-size:12px">${escapeHtml(r.mit)}</td>
+      <td><span class="ms-status ${r.status === 'closed' ? 'done' : r.status === 'monitoring' ? 'progress' : 'atrisk'}">${r.status}</span></td>
+    </tr>
+  `).join('');
+
+  el.querySelectorAll('tr').forEach(tr => {
+    tr.addEventListener('click', () => openRiskModal(tr.dataset.id));
+  });
+}
+
+function openTaskModal(id) {
+  const isNew = !id;
+  state.currentTask = isNew ? null : state.tasks.find(t => t.id === id);
+
+  document.getElementById('task-modal-title').textContent = isNew ? 'New task' : 'Edit task';
+  document.getElementById('task-modal-sub').textContent = isNew ? 'Add to project backlog' : `ID: ${id}`;
+
+  const t = state.currentTask || { phase:'p1', status:'backlog', priority:'med', owner:'Fatim', title:'', notes:'', start:'', due:'' };
+  document.getElementById('f-title').value = t.title;
+  document.getElementById('f-phase').value = t.phase;
+  document.getElementById('f-status').value = t.status;
+  document.getElementById('f-owner').value = t.owner;
+  document.getElementById('f-priority').value = t.priority;
+  document.getElementById('f-start').value = t.start || '';
+  document.getElementById('f-due').value = t.due || '';
+  document.getElementById('f-notes').value = t.notes || '';
+
+  document.getElementById('btn-delete-task').style.display = isNew ? 'none' : 'inline-block';
+  document.getElementById('comments-section').style.display = isNew ? 'none' : 'block';
+
+  if (!isNew) renderComments(id);
+  document.getElementById('task-modal').classList.add('open');
+}
+
+function renderComments(taskId) {
+  const list = state.comments[taskId] || [];
+  const el = document.getElementById('comments-list');
+  el.innerHTML = list.length === 0
+    ? '<div class="empty">No activity yet</div>'
+    : list.map(c => `
+      <div class="comment">
+        <div class="comment-meta">
+          <span class="comment-author">${escapeHtml(c.author)}</span>
+          <span class="comment-time">${c.time}</span>
+        </div>
+        <div class="comment-text">${escapeHtml(c.text)}</div>
+      </div>
+    `).join('');
+}
+
+async function saveTaskFromModal() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { toast('Title required'); return; }
+
+  const payload = {
+    title,
+    phase: document.getElementById('f-phase').value,
+    status: document.getElementById('f-status').value,
+    owner: document.getElementById('f-owner').value.trim(),
+    priority: document.getElementById('f-priority').value,
+    start: document.getElementById('f-start').value,
+    due: document.getElementById('f-due').value,
+    notes: document.getElementById('f-notes').value.trim(),
+  };
+
+  if (state.currentTask) {
+    Object.assign(state.currentTask, payload);
+    toast('Task updated');
+  } else {
+    const id = 't' + Date.now();
+    state.tasks.push({ id, ...payload });
+    toast('Task created');
+  }
+
+  await saveTasks();
+  closeModal('task-modal');
+  renderAll();
+}
+
+async function deleteCurrentTask() {
+  if (!state.currentTask) return;
+  if (!confirm('Delete this task?')) return;
+  state.tasks = state.tasks.filter(t => t.id !== state.currentTask.id);
+  delete state.comments[state.currentTask.id];
+  await saveTasks();
+  await saveComments();
+  closeModal('task-modal');
+  renderAll();
+  toast('Task deleted');
+}
+
+async function addComment() {
+  if (!state.currentTask) return;
+  const text = document.getElementById('new-comment').value.trim();
+  if (!text) return;
+
+  const id = state.currentTask.id;
+  if (!state.comments[id]) state.comments[id] = [];
+  state.comments[id].push({
+    author: 'Malick',
+    text,
+    time: new Date().toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }),
+  });
+  await saveComments();
+  document.getElementById('new-comment').value = '';
+  renderComments(id);
+  renderAll();
+}
+
+function openRiskModal(id) {
+  const isNew = !id;
+  state.currentRisk = isNew ? null : state.risks.find(r => r.id === id);
+  document.getElementById('risk-modal-title').textContent = isNew ? 'New risk' : 'Edit risk';
+
+  const r = state.currentRisk || { desc:'', sev:'m', status:'open', owner:'Fatim', mit:'' };
+  document.getElementById('r-desc').value = r.desc;
+  document.getElementById('r-sev').value = r.sev;
+  document.getElementById('r-status').value = r.status;
+  document.getElementById('r-owner').value = r.owner;
+  document.getElementById('r-mit').value = r.mit;
+
+  document.getElementById('btn-delete-risk').style.display = isNew ? 'none' : 'inline-block';
+  document.getElementById('risk-modal').classList.add('open');
+}
+
+async function saveRiskFromModal() {
+  const desc = document.getElementById('r-desc').value.trim();
+  if (!desc) { toast('Description required'); return; }
+  const payload = {
+    desc,
+    sev: document.getElementById('r-sev').value,
+    status: document.getElementById('r-status').value,
+    owner: document.getElementById('r-owner').value.trim(),
+    mit: document.getElementById('r-mit').value.trim(),
+  };
+  if (state.currentRisk) {
+    Object.assign(state.currentRisk, payload);
+    toast('Risk updated');
+  } else {
+    state.risks.push({ id: 'r' + Date.now(), ...payload });
+    toast('Risk added');
+  }
+  await saveRisks();
+  closeModal('risk-modal');
+  renderAll();
+}
+
+async function deleteCurrentRisk() {
+  if (!state.currentRisk) return;
+  if (!confirm('Delete this risk?')) return;
+  state.risks = state.risks.filter(r => r.id !== state.currentRisk.id);
+  await saveRisks();
+  closeModal('risk-modal');
+  renderAll();
+  toast('Risk deleted');
+}
+
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  document.querySelector(`.tab[data-view="${name}"]`).classList.add('active');
+
+  if (name === 'gantt') renderGantt();
+  if (name === 'tasks') renderTaskBoard();
+  if (name === 'milestones') renderMilestones('milestones-full');
+  if (name === 'stakeholders') renderStakeholders();
+  if (name === 'risks') renderRisks();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function exportJson() {
+  const data = {
+    project: 'CWA Billing Process — v2.0',
+    lead: 'Fatim Sow',
+    exportedAt: new Date().toISOString(),
+    tasks: state.tasks,
+    milestones: state.milestones,
+    risks: state.risks,
+    comments: state.comments,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pilot-cwa-billing-v2-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported');
+}
+
+/* ============================================================
+   IMPORT
+============================================================ */
+function triggerImport() {
+  document.getElementById('import-file-input').click();
+}
+
+async function handleImportFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async (evt) => {
+    try {
+      const data = JSON.parse(evt.target.result);
+      if (!data.tasks || !Array.isArray(data.tasks)) {
+        toast('Invalid file — missing tasks');
+        return;
+      }
+      if (!confirm(`Import will REPLACE current project data:\n\n· ${data.tasks.length} tasks\n· ${(data.milestones||[]).length} milestones\n· ${(data.risks||[]).length} risks\n\nA backup of current data will be saved first. Continue?`)) {
+        e.target.value = '';
+        return;
+      }
+      // Auto-backup current state before replacing
+      await createBackup('Auto-backup before import', true);
+
+      state.tasks = data.tasks;
+      state.milestones = data.milestones || state.milestones;
+      state.risks = data.risks || state.risks;
+      state.comments = data.comments || {};
+
+      await saveTasks();
+      await saveRisks();
+      await saveComments();
+      try { await window.storage.set('pilot_cwa_v2_milestones', JSON.stringify(state.milestones)); } catch(e){}
+
+      renderAll();
+      toast(`Imported ${data.tasks.length} tasks`);
+    } catch (err) {
+      console.error(err);
+      toast('Import failed — invalid JSON');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================================
+   BACKUPS
+============================================================ */
+async function listBackups() {
+  try {
+    const res = await window.storage.list('pilot_cwa_v2_backup:');
+    return res?.keys || [];
+  } catch { return []; }
+}
+
+async function createBackup(label, silent) {
+  const timestamp = new Date().toISOString();
+  const key = `pilot_cwa_v2_backup:${timestamp}`;
+  const payload = {
+    label: label || 'Manual backup',
+    createdAt: timestamp,
+    tasks: state.tasks,
+    milestones: state.milestones,
+    risks: state.risks,
+    comments: state.comments,
+  };
+  try {
+    await window.storage.set(key, JSON.stringify(payload));
+    // Keep max 10 backups — prune oldest
+    const keys = await listBackups();
+    if (keys.length > 10) {
+      const sorted = keys.slice().sort();
+      const toDelete = sorted.slice(0, keys.length - 10);
+      for (const k of toDelete) {
+        try { await window.storage.delete(k); } catch(e){}
+      }
+    }
+    if (!silent) {
+      toast('Backup saved');
+      openBackupModal();
+    }
+    return true;
+  } catch (err) {
+    console.error(err);
+    if (!silent) toast('Backup failed');
+    return false;
+  }
+}
+
+async function openBackupModal() {
+  await renderBackupList();
+  document.getElementById('backup-modal').classList.add('open');
+}
+
+async function renderBackupList() {
+  const keys = await listBackups();
+  const el = document.getElementById('backup-list');
+
+  if (keys.length === 0) {
+    el.innerHTML = '<div class="empty">No backups yet. Click "+ New Backup" to save your first snapshot.</div>';
+    return;
+  }
+
+  const sorted = keys.slice().sort().reverse();
+  const entries = [];
+  for (const k of sorted) {
+    try {
+      const res = await window.storage.get(k);
+      if (res) {
+        const data = JSON.parse(res.value);
+        entries.push({ key: k, ...data });
+      }
+    } catch(e){}
+  }
+
+  el.innerHTML = entries.map(b => {
+    const dt = new Date(b.createdAt);
+    const label = b.label || 'Manual backup';
+    const nTasks = (b.tasks || []).length;
+    const nRisks = (b.risks || []).length;
+    return `
+      <div class="backup-entry">
+        <div>
+          <div class="backup-entry-info">${escapeHtml(label)}</div>
+          <div class="backup-entry-meta">${dt.toLocaleString('en-GB')} · ${nTasks} tasks · ${nRisks} risks</div>
+        </div>
+        <div class="backup-entry-actions">
+          <button class="btn" data-restore="${escapeHtml(b.key)}">Restore</button>
+          <button class="btn" data-dl="${escapeHtml(b.key)}">Download</button>
+          <button class="btn danger" data-del="${escapeHtml(b.key)}">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.querySelectorAll('[data-restore]').forEach(b => {
+    b.addEventListener('click', () => restoreBackup(b.dataset.restore));
+  });
+  el.querySelectorAll('[data-dl]').forEach(b => {
+    b.addEventListener('click', () => downloadBackup(b.dataset.dl));
+  });
+  el.querySelectorAll('[data-del]').forEach(b => {
+    b.addEventListener('click', () => deleteBackup(b.dataset.del));
+  });
+}
+
+async function restoreBackup(key) {
+  if (!confirm('Restore this backup? Your current data will be overwritten (a safety backup will be created first).')) return;
+  try {
+    await createBackup('Auto-backup before restore', true);
+    const res = await window.storage.get(key);
+    const data = JSON.parse(res.value);
+    state.tasks = data.tasks;
+    state.milestones = data.milestones || state.milestones;
+    state.risks = data.risks || state.risks;
+    state.comments = data.comments || {};
+    await saveTasks();
+    await saveRisks();
+    await saveComments();
+    try { await window.storage.set('pilot_cwa_v2_milestones', JSON.stringify(state.milestones)); } catch(e){}
+    closeModal('backup-modal');
+    renderAll();
+    toast('Backup restored');
+  } catch (err) {
+    console.error(err);
+    toast('Restore failed');
+  }
+}
+
+async function downloadBackup(key) {
+  try {
+    const res = await window.storage.get(key);
+    const data = JSON.parse(res.value);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `pilot-backup-${data.createdAt.slice(0,19).replace(/[:T]/g,'-')}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('Backup downloaded');
+  } catch (err) {
+    console.error(err);
+    toast('Download failed');
+  }
+}
+
+async function deleteBackup(key) {
+  if (!confirm('Delete this backup permanently?')) return;
+  try {
+    await window.storage.delete(key);
+    await renderBackupList();
+    toast('Backup deleted');
+  } catch(err){
+    console.error(err);
+    toast('Delete failed');
+  }
+}
+
+/* ============================================================
+   STATUS REPORT
+============================================================ */
+function generateStatusReport() {
+  const total = state.tasks.length;
+  const done = state.tasks.filter(t => t.status === 'done').length;
+  const doing = state.tasks.filter(t => t.status === 'doing').length;
+  const todo = state.tasks.filter(t => t.status === 'todo').length;
+  const backlog = state.tasks.filter(t => t.status === 'backlog').length;
+  const overdue = state.tasks.filter(t => t.status !== 'done' && new Date(t.due) < TODAY);
+  const upcoming = state.tasks
+    .filter(t => t.status !== 'done' && new Date(t.due) >= TODAY)
+    .sort((a,b) => new Date(a.due) - new Date(b.due))
+    .slice(0, 8);
+  const progress = total ? Math.round(done / total * 100) : 0;
+  const cp = currentPhase();
+  const daysToGoLive = daysBetween(TODAY, GO_LIVE);
+  const daysToFullPaid = daysBetween(TODAY, FULL_PAID);
+
+  const openHighRisks = state.risks.filter(r => r.status !== 'closed' && r.sev === 'h');
+  const openMedRisks = state.risks.filter(r => r.status !== 'closed' && r.sev === 'm');
+
+  const upcomingMilestones = state.milestones
+    .filter(m => m.status !== 'done')
+    .sort((a,b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 4);
+
+  // Phase breakdown
+  const phaseBreakdown = PHASES.map(p => {
+    const pTasks = state.tasks.filter(t => t.phase === p.id);
+    const pDone = pTasks.filter(t => t.status === 'done').length;
+    const pPct = pTasks.length ? Math.round(pDone / pTasks.length * 100) : 0;
+    let status = 'On track';
+    let tagClass = 'good';
+    if (cp && p.id === cp.id) { status = 'In progress'; tagClass = 'warn'; }
+    else if (p.monthEnd < currentMonthIndex()) { status = pPct === 100 ? 'Complete' : 'Behind'; tagClass = pPct === 100 ? 'good' : 'bad'; }
+    else { status = 'Upcoming'; tagClass = 'neutral'; }
+    return { phase: p, pct: pPct, done: pDone, total: pTasks.length, status, tagClass };
+  });
+
+  // Overall RAG
+  let ragStatus = 'GREEN';
+  let ragClass = 'good';
+  if (overdue.length >= 3 || openHighRisks.length >= 2) {
+    ragStatus = 'RED'; ragClass = 'bad';
+  } else if (overdue.length > 0 || openHighRisks.length > 0 || openMedRisks.length >= 3) {
+    ragStatus = 'AMBER'; ragClass = 'warn';
+  }
+
+  const reportDate = TODAY.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+  const html = `
+    <div class="report">
+      <div class="report-header">
+        <div class="report-doc-title">CWA Billing Process — Status Report</div>
+        <div class="report-doc-sub">
+          ${reportDate} &nbsp;·&nbsp; Project Lead: Fatim Sow &nbsp;·&nbsp; Sponsor: Yann (VP CWA)
+        </div>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-kpi" style="border-left-color: ${ragStatus === 'GREEN' ? 'var(--green)' : ragStatus === 'AMBER' ? 'var(--amber)' : 'var(--orange)'}">
+          <div class="report-kpi-label">Overall RAG</div>
+          <div class="report-kpi-value" style="color: ${ragStatus === 'GREEN' ? 'var(--green)' : ragStatus === 'AMBER' ? 'var(--amber)' : 'var(--orange)'}">${ragStatus}</div>
+        </div>
+        <div class="report-kpi">
+          <div class="report-kpi-label">Progress</div>
+          <div class="report-kpi-value">${progress}<span style="font-size:14px;color:var(--ink-muted)">%</span></div>
+        </div>
+        <div class="report-kpi">
+          <div class="report-kpi-label">Days to Go-Live</div>
+          <div class="report-kpi-value">${daysToGoLive}</div>
+        </div>
+        <div class="report-kpi">
+          <div class="report-kpi-label">Current phase</div>
+          <div class="report-kpi-value" style="font-size:14px">${cp ? `P${cp.num}. ${cp.name}` : 'Pre-start'}</div>
+        </div>
+      </div>
+
+      <h3>Executive summary</h3>
+      <p>
+        The CWA Billing Process project is <strong>${progress}% complete</strong> as of ${fmtDate(TODAY)}.
+        ${cp ? `We are currently in <strong>Phase ${cp.num} — ${cp.name}</strong> (${cp.period}).` : ''}
+        Go-Live is scheduled for <strong>July 2026</strong> (${daysToGoLive} days away) and full transition to the automated paid model is scheduled for <strong>January 2027</strong> (${daysToFullPaid} days away).
+        ${overdue.length === 0 ? 'No tasks are currently overdue.' : `<strong>${overdue.length} task(s) are overdue</strong> and require immediate attention.`}
+        ${openHighRisks.length > 0 ? ` <strong>${openHighRisks.length} high-severity risk(s)</strong> are open and being actively managed.` : ' No high-severity risks are currently open.'}
+      </p>
+
+      <h3>Phase status</h3>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Period</th>
+            <th>Progress</th>
+            <th>Tasks</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${phaseBreakdown.map(p => `
+            <tr>
+              <td><strong>P${p.phase.num}. ${escapeHtml(p.phase.name)}</strong></td>
+              <td>${escapeHtml(p.phase.period)}</td>
+              <td>${p.pct}%</td>
+              <td>${p.done}/${p.total}</td>
+              <td><span class="report-tag report-tag-${p.tagClass}">${p.status}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <h3>Task breakdown</h3>
+      <table class="report-table">
+        <thead>
+          <tr><th>Status</th><th>Count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Done</td><td><strong>${done}</strong></td></tr>
+          <tr><td>In progress</td><td><strong>${doing}</strong></td></tr>
+          <tr><td>To do</td><td><strong>${todo}</strong></td></tr>
+          <tr><td>Backlog</td><td><strong>${backlog}</strong></td></tr>
+          <tr><td style="color:var(--orange)"><strong>Overdue</strong></td><td><strong style="color:var(--orange)">${overdue.length}</strong></td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>${total}</strong></td></tr>
+        </tbody>
+      </table>
+
+      ${overdue.length > 0 ? `
+        <h3 style="color: var(--orange)">Overdue tasks — action required</h3>
+        <table class="report-table">
+          <thead><tr><th>Task</th><th>Phase</th><th>Owner</th><th>Due</th></tr></thead>
+          <tbody>
+            ${overdue.map(t => `
+              <tr>
+                <td>${escapeHtml(t.title)}</td>
+                <td>P${phaseById(t.phase).num}</td>
+                <td>${escapeHtml(t.owner)}</td>
+                <td style="color:var(--orange)"><strong>${fmtDate(t.due)}</strong></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      ` : ''}
+
+      <h3>Upcoming milestones</h3>
+      <table class="report-table">
+        <thead><tr><th>Date</th><th>Milestone</th><th>Details</th></tr></thead>
+        <tbody>
+          ${upcomingMilestones.map(m => `
+            <tr>
+              <td><strong>${fmtDate(m.date)}</strong></td>
+              <td><strong>${escapeHtml(m.title)}</strong></td>
+              <td style="color:var(--ink-muted)">${escapeHtml(m.desc)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <h3>Upcoming tasks (next 8)</h3>
+      <table class="report-table">
+        <thead><tr><th>Task</th><th>Phase</th><th>Owner</th><th>Due</th></tr></thead>
+        <tbody>
+          ${upcoming.length === 0 ? '<tr><td colspan="4" style="color:var(--ink-muted); text-align:center; font-style:italic">No upcoming tasks</td></tr>' :
+            upcoming.map(t => `
+              <tr>
+                <td>${escapeHtml(t.title)}</td>
+                <td>P${phaseById(t.phase).num}</td>
+                <td>${escapeHtml(t.owner)}</td>
+                <td>${fmtDate(t.due)}</td>
+              </tr>
+            `).join('')}
+        </tbody>
+      </table>
+
+      <h3>Open risks (${state.risks.filter(r => r.status !== 'closed').length})</h3>
+      <table class="report-table">
+        <thead><tr><th>Sev</th><th>Risk</th><th>Owner</th><th>Mitigation</th></tr></thead>
+        <tbody>
+          ${state.risks.filter(r => r.status !== 'closed').sort((a,b)=>({h:0,m:1,l:2})[a.sev]-({h:0,m:1,l:2})[b.sev]).map(r => `
+            <tr>
+              <td><span class="report-tag report-tag-${r.sev === 'h' ? 'bad' : r.sev === 'm' ? 'warn' : 'good'}">${({h:'High',m:'Med',l:'Low'})[r.sev]}</span></td>
+              <td>${escapeHtml(r.desc)}</td>
+              <td>${escapeHtml(r.owner)}</td>
+              <td style="color:var(--ink-muted)">${escapeHtml(r.mit)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 10px; color: var(--ink-dim); text-align: center; font-family: var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase;">
+        PILOT Dashboard · Amadeus IT Group · Generated ${new Date().toLocaleString('en-GB')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('report-content').innerHTML = html;
+  document.getElementById('report-modal-sub').textContent = `Generated ${new Date().toLocaleString('en-GB')}`;
+  document.getElementById('report-modal').classList.add('open');
+}
+
+function printReport() { window.print(); }
+
+function copyReport() {
+  // Build a plain-text version for easy pasting into email
+  const total = state.tasks.length;
+  const done = state.tasks.filter(t => t.status === 'done').length;
+  const progress = total ? Math.round(done / total * 100) : 0;
+  const cp = currentPhase();
+  const overdue = state.tasks.filter(t => t.status !== 'done' && new Date(t.due) < TODAY);
+  const openHighRisks = state.risks.filter(r => r.status !== 'closed' && r.sev === 'h');
+
+  let txt = `CWA BILLING PROCESS — STATUS REPORT\n`;
+  txt += `${TODAY.toLocaleDateString('en-GB', { weekday:'long', day:'2-digit', month:'long', year:'numeric' })}\n`;
+  txt += `Lead: Fatim Sow  ·  Sponsor: Yann (VP CWA)\n`;
+  txt += `${'─'.repeat(60)}\n\n`;
+
+  txt += `OVERALL\n`;
+  txt += `  Progress: ${progress}% (${done}/${total} tasks done)\n`;
+  txt += `  Current phase: ${cp ? `P${cp.num}. ${cp.name}` : 'Pre-start'}\n`;
+  txt += `  Days to Go-Live (Jul 2026): ${daysBetween(TODAY, GO_LIVE)}\n`;
+  txt += `  Days to Full Paid Model (Jan 2027): ${daysBetween(TODAY, FULL_PAID)}\n`;
+  txt += `  Overdue tasks: ${overdue.length}\n`;
+  txt += `  High-severity open risks: ${openHighRisks.length}\n\n`;
+
+  txt += `PHASE STATUS\n`;
+  PHASES.forEach(p => {
+    const pt = state.tasks.filter(t => t.phase === p.id);
+    const pd = pt.filter(t => t.status === 'done').length;
+    const pp = pt.length ? Math.round(pd / pt.length * 100) : 0;
+    txt += `  P${p.num}. ${p.name.padEnd(24)} ${pp.toString().padStart(3)}%  (${pd}/${pt.length})  ${p.period}\n`;
+  });
+
+  if (overdue.length > 0) {
+    txt += `\nOVERDUE TASKS — ACTION REQUIRED\n`;
+    overdue.forEach(t => {
+      txt += `  · ${t.title} — ${t.owner} — due ${fmtDate(t.due)}\n`;
+    });
+  }
+
+  txt += `\nNEXT MILESTONES\n`;
+  state.milestones
+    .filter(m => m.status !== 'done')
+    .sort((a,b) => new Date(a.date) - new Date(b.date))
+    .slice(0, 4)
+    .forEach(m => {
+      txt += `  · ${fmtDate(m.date)} — ${m.title}\n`;
+    });
+
+  const openRisks = state.risks.filter(r => r.status !== 'closed');
+  if (openRisks.length > 0) {
+    txt += `\nOPEN RISKS (${openRisks.length})\n`;
+    openRisks.forEach(r => {
+      txt += `  [${r.sev.toUpperCase()}] ${r.desc} — ${r.owner}\n`;
+    });
+  }
+
+  navigator.clipboard.writeText(txt).then(() => {
+    toast('Report copied to clipboard');
+  }).catch(() => {
+    toast('Clipboard unavailable — try Print instead');
+  });
+}
+
+function renderAll() {
+  renderHeader();
+  renderKpis();
+  renderPhases();
+  renderBoardPreview();
+  renderMilestones('milestones-preview', 4);
+  const active = document.querySelector('.tab.active').dataset.view;
+  if (active === 'tasks') renderTaskBoard();
+  if (active === 'gantt') renderGantt();
+  if (active === 'milestones') renderMilestones('milestones-full');
+  if (active === 'risks') renderRisks();
+  if (active === 'stakeholders') renderStakeholders();
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => switchView(t.dataset.view));
+});
+document.querySelectorAll('[data-close]').forEach(b => {
+  b.addEventListener('click', () => closeModal(b.dataset.close));
+});
+document.querySelectorAll('.modal-backdrop').forEach(bd => {
+  bd.addEventListener('click', e => {
+    if (e.target === bd) bd.classList.remove('open');
+  });
+});
+document.getElementById('btn-add-task').addEventListener('click', () => openTaskModal(null));
+document.getElementById('btn-add-task-ov').addEventListener('click', () => openTaskModal(null));
+document.getElementById('btn-save-task').addEventListener('click', saveTaskFromModal);
+document.getElementById('btn-delete-task').addEventListener('click', deleteCurrentTask);
+document.getElementById('btn-add-comment').addEventListener('click', addComment);
+document.getElementById('new-comment').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addComment();
+});
+document.getElementById('btn-add-risk').addEventListener('click', () => openRiskModal(null));
+document.getElementById('btn-save-risk').addEventListener('click', saveRiskFromModal);
+document.getElementById('btn-delete-risk').addEventListener('click', deleteCurrentRisk);
+document.getElementById('btn-export').addEventListener('click', exportJson);
+
+// Top bar action buttons
+document.getElementById('btn-status-report').addEventListener('click', generateStatusReport);
+document.getElementById('btn-import').addEventListener('click', triggerImport);
+document.getElementById('btn-export-top').addEventListener('click', exportJson);
+document.getElementById('btn-backup').addEventListener('click', () => createBackup('Manual backup'));
+document.getElementById('import-file-input').addEventListener('change', handleImportFile);
+
+// Report modal actions
+document.getElementById('btn-print-report').addEventListener('click', printReport);
+document.getElementById('btn-copy-report').addEventListener('click', copyReport);
+
+// Backup modal actions
+document.getElementById('btn-new-backup').addEventListener('click', () => createBackup('Manual backup'));
+document.getElementById('phase-filter').addEventListener('change', e => {
+  state.activePhase = e.target.value;
+  renderPhases();
+  renderTaskBoard();
+});
+
+(async function init() {
+  await loadState();
+  renderAll();
+})();
+
+</script>
+</body>
+</html>
