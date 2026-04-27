@@ -1558,7 +1558,22 @@ let state = {
 
 async function loadState() {
   try {
+    const doc = await db.collection("dashboard").doc("main").get();
+
+    if (doc.exists && doc.data()) {
+      state = doc.data();
+      console.log("Chargé depuis Firebase");
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+
+  // fallback ancien système
+  try {
     const t = await window.storage.get('pilot_cwa_v2_tasks').catch(() => null);
+    state.tasks = t ? JSON.parse(t.value) : JSON.parse(JSON.stringify(SEED_TASKS));
+  } catch { state.tasks = JSON.parse(JSON.stringify(SEED_TASKS)); }
     state.tasks = t ? JSON.parse(t.value) : JSON.parse(JSON.stringify(SEED_TASKS));
   } catch { state.tasks = JSON.parse(JSON.stringify(SEED_TASKS)); }
 
