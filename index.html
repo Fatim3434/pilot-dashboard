@@ -1556,28 +1556,11 @@ let state = {
   isLoaded: false,
 };
 
-async function loadState() {
-  try {
-    const t = await window.storage.get('pilot_cwa_v2_tasks').catch(() => null);
-    state.tasks = t ? JSON.parse(t.value) : JSON.parse(JSON.stringify(SEED_TASKS));
-  } catch { state.tasks = JSON.parse(JSON.stringify(SEED_TASKS)); }
-
-  try {
-    const r = await window.storage.get('pilot_cwa_v2_risks').catch(() => null);
-    state.risks = r ? JSON.parse(r.value) : JSON.parse(JSON.stringify(SEED_RISKS));
-  } catch { state.risks = JSON.parse(JSON.stringify(SEED_RISKS)); }
-
-  try {
-    const c = await window.storage.get('pilot_cwa_v2_comments').catch(() => null);
-    state.comments = c ? JSON.parse(c.value) : {};
-  } catch { state.comments = {}; }
-
-  try {
-    const m = await window.storage.get('pilot_cwa_v2_milestones').catch(() => null);
-    state.milestones = m ? JSON.parse(m.value) : JSON.parse(JSON.stringify(SEED_MILESTONES));
-  } catch { state.milestones = JSON.parse(JSON.stringify(SEED_MILESTONES)); }
-
-  state.isLoaded = true;
+  async function loadState() {
+    const doc = await db.collection("dashboard").doc("main").get();
+if (doc.exists) {
+  state = doc.data();
+}
 }
 
 async function saveTasks() {
