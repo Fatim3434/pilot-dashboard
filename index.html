@@ -1562,8 +1562,12 @@ async function loadState() {
   if (doc.exists && doc.data()) {
     state = doc.data();
   } else {
-    console.log("Aucune donnée Firebase, on garde le state par défaut");
+    console.log("Aucune donnée Firebase → on initialise");
+
+    // 🔥 IMPORTANT : on sauvegarde le state par défaut
+    await db.collection("dashboard").doc("main").set(state);
   }
+}
 }
 
 async function saveTasks() {
