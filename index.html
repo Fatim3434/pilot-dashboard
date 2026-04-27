@@ -1556,11 +1556,14 @@ let state = {
   isLoaded: false,
 };
 
-  async function loadState() {
-    const doc = await db.collection("dashboard").doc("main").get();
-if (doc.exists) {
-  state = doc.data();
-}
+async function loadState() {
+  const doc = await db.collection("dashboard").doc("main").get();
+
+  if (doc.exists && doc.data()) {
+    state = doc.data();
+  } else {
+    console.log("Aucune donnée Firebase, on garde le state par défaut");
+  }
 }
 
 async function saveTasks() {
