@@ -1581,7 +1581,10 @@ async function loadState() {
 }
 
 async function saveTasks() {
-  try { await window.storage.set('pilot_cwa_v2_tasks', JSON.stringify(state.tasks)); } catch(e){ console.error(e); }
+  try { 
+  await window.storage.set('pilot_cwa_v2_tasks', JSON.stringify(state.tasks)); 
+  await db.collection("dashboard").doc("main").set(state);
+} catch(e){ console.error(e); }
 }
 async function saveRisks() {
   try { await window.storage.set('pilot_cwa_v2_risks', JSON.stringify(state.risks)); } catch(e){ console.error(e); }
